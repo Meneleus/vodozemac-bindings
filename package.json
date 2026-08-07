@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Meneleus/vodozemac-bindings"
+    "url": "git+https://github.com/Meneleus/vodozemac-bindings.git"
   },
   "type": "module",
   "exports": {
@@ -36,7 +36,9 @@
   "scripts": {
     "build:web": "wasm-pack build --target web --release --out-dir pkg-web",
     "build:node": "wasm-pack build --target nodejs --release --out-dir pkg-node",
-    "build": "npm run build:web && npm run build:node",
+    "strip:pkg-gitignore": "node scripts/strip-pkg-gitignore.mjs",
+    "build": "npm run build:web && npm run build:node && npm run strip:pkg-gitignore",
+    "prepublishOnly": "npm run strip:pkg-gitignore",
     "test:smoke": "node scripts/smoke.mjs",
     "test:vectors": "node scripts/verify-test-vectors.mjs",
     "test": "npm run test:smoke && npm run test:vectors",

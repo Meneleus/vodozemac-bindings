@@ -5,9 +5,9 @@
 # - ios:     VodozemacFFI.xcframework + generated Swift (uploaded artifact)
 #
 # On a tag push (v*), the publish job assembles both npm packages with the
-# freshly built native artifacts and publishes them to the @kinsh scope.
-# Requires the NPM_TOKEN repository secret (npm automation token with
-# publish rights on @kinsh).
+# freshly built native artifacts and publishes them to the @kinsh scope via
+# npm Trusted Publishing (OIDC). No NPM_TOKEN secret — configure a Trusted
+# Publisher on each package pointing at this workflow file (build.yml).
 
 name: build
 
@@ -122,12 +122,18 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [wasm, android, ios, rn-typecheck]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # npm Trusted Publishing (OIDC)
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
+          # Trusted Publishing needs Node >= 22.14 and npm >= 11.5.1
           node-version: 22
           registry-url: https://registry.npmjs.org
+      - name: Ensure npm supports Trusted Publishing
+        run: npm install -g npm@latest
       - uses: actions/download-artifact@v4
         with:
           name: wasm-pkgs
@@ -145,12 +151,10 @@ jobs:
         run: |
           npm ci
           npm run build
+      # wasm-pack emits pkg-*/.gitignore with `*`; npm pack honors it and
+      # would publish an empty-ish tarball. strip runs via prepublishOnly too.
       - name: Publish @kinsh/vodozemac-wasm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
       - name: Publish @kinsh/vodozemac-rn
         working-directory: rn
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
