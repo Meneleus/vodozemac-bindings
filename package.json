@@ -1,26 +1,26 @@
 {
-  "name": "@dtelecom/vodozemac-wasm",
-  "version": "0.3.0",
-  "description": "Browser/Node WASM bindings for vodozemac (Olm primitives), tailored for non-Matrix chat use.",
+  "name": "@kinsh/vodozemac-wasm",
+  "version": "0.4.0",
+  "description": "Browser/Node WASM bindings for vodozemac (Olm + Megolm primitives), tailored for non-Matrix chat use.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dTelecom/vodozemac-wasm"
+    "url": "https://github.com/Meneleus/vodozemac-bindings"
   },
   "type": "module",
   "exports": {
     ".": {
       "node": {
-        "types": "./pkg-node/dtelecom_vodozemac_wasm.d.ts",
-        "default": "./pkg-node/dtelecom_vodozemac_wasm.js"
+        "types": "./pkg-node/kinsh_vodozemac_wasm.d.ts",
+        "default": "./pkg-node/kinsh_vodozemac_wasm.js"
       },
       "browser": {
-        "types": "./pkg-web/dtelecom_vodozemac_wasm.d.ts",
-        "default": "./pkg-web/dtelecom_vodozemac_wasm.js"
+        "types": "./pkg-web/kinsh_vodozemac_wasm.d.ts",
+        "default": "./pkg-web/kinsh_vodozemac_wasm.js"
       },
       "default": {
-        "types": "./pkg-web/dtelecom_vodozemac_wasm.d.ts",
-        "default": "./pkg-web/dtelecom_vodozemac_wasm.js"
+        "types": "./pkg-web/kinsh_vodozemac_wasm.d.ts",
+        "default": "./pkg-web/kinsh_vodozemac_wasm.js"
       }
     }
   },
@@ -37,6 +37,12 @@
     "build:web": "wasm-pack build --target web --release --out-dir pkg-web",
     "build:node": "wasm-pack build --target nodejs --release --out-dir pkg-node",
     "build": "npm run build:web && npm run build:node",
+    "test:smoke": "node scripts/smoke.mjs",
+    "test:vectors": "node scripts/verify-test-vectors.mjs",
+    "test": "npm run test:smoke && npm run test:vectors",
     "clean": "rm -rf pkg pkg-web pkg-node target"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

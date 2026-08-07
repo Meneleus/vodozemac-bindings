@@ -1,12 +1,14 @@
-# @dtelecom/vodozemac-rn
+# @kinsh/vodozemac-rn
 
 React Native bindings for [vodozemac](https://github.com/matrix-org/vodozemac)
-(Olm primitives), exposed via a UniFFI-generated Swift + Kotlin native
-bridge. Drop-in replacement for `@dtelecom/vodozemac-wasm` on the React
-Native target — same JS surface (`Account`, `Session`, `InboundResult`),
-same JSON-string shapes, same pickle format.
+(Olm + Megolm primitives), exposed via a UniFFI-generated Swift + Kotlin
+native bridge. Drop-in replacement for `@kinsh/vodozemac-wasm` on the React
+Native target — same JS surface (`Account`, `Session`, `InboundResult`,
+`GroupSession`, `InboundGroupSession`), same JSON-string shapes, same
+pickle format.
 
-Used by `@dtelecom/secure-chat-client` when running on React Native.
+Fork of dTelecom's `@dtelecom/vodozemac-rn` (Apache-2.0) with the Megolm
+group-session surface added.
 
 ## Why a native bridge instead of WASM
 
@@ -20,7 +22,7 @@ package routes around the engine entirely: Rust → UniFFI → Swift/Kotlin
 ## Install
 
 ```sh
-npm install @dtelecom/vodozemac-rn react-native-get-random-values
+npm install @kinsh/vodozemac-rn react-native-get-random-values
 ```
 
 Then once at the top of your app entry (`index.js`), before importing
@@ -34,13 +36,13 @@ The package ships prebuilt artifacts (iOS XCFramework + Android .so for
 arm64-v8a, armeabi-v7a, x86_64) — no Rust toolchain needed on the
 consumer's machine.
 
-## Use
+## Use — Olm (1:1)
 
 ```ts
-import init, { Account } from "@dtelecom/vodozemac-rn";
+import init, { Account } from "@kinsh/vodozemac-rn";
 
 await init();                         // no-op on RN; included for parity
-                                      // with @dtelecom/vodozemac-wasm
+                                      // with @kinsh/vodozemac-wasm
 
 const account = Account.new();
 account.generateOneTimeKeys(50);
@@ -63,12 +65,36 @@ const restored = Account.fromPickle(pickle);
 account.close();
 ```
 
+## Use — Megolm (group)
+
+```ts
+import { GroupSession, InboundGroupSession } from "@kinsh/vodozemac-rn";
+
+// Sender side — one outbound session per (group, sender device):
+const outbound = new GroupSession();
+const keyForMembers = outbound.sessionKey();   // distribute over Olm
+const body = outbound.encrypt("hello group");  // base64 megolm message
+
+// Member side:
+const inbound = new InboundGroupSession(keyForMembers);
+const { plaintext, messageIndex } = JSON.parse(inbound.decrypt(body));
+// Replay protection is the app's job: track (sessionId, messageIndex).
+
+// History sharing / persistence:
+const exported = inbound.exportAt(0);          // undefined below firstKnownIndex()
+const imported = InboundGroupSession.import(exported!);
+const restored = InboundGroupSession.fromPickle(inbound.pickle());
+```
+
+Megolm is pinned to version 1 (the Matrix-production format) on all
+platforms; ciphertext and pickles interoperate with `@kinsh/vodozemac-wasm`.
+
 ## API
 
-Identical to `@dtelecom/vodozemac-wasm`. See its README for the full
+Identical to `@kinsh/vodozemac-wasm`. See its README for the full
 method list. Method names, argument shapes, and return-value JSON
-schemas are bit-for-bit compatible — code calling vodozemac through
-`@dtelecom/secure-chat-client` doesn't know which target it's on.
+schemas are bit-for-bit compatible — SDK code doesn't know which
+target it's on.
 
 ## Platforms
 

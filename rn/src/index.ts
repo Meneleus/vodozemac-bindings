@@ -1,6 +1,6 @@
-// Public surface for @dtelecom/vodozemac-rn.
+// Public surface for @kinsh/vodozemac-rn.
 //
-// Mirrors @dtelecom/vodozemac-wasm's pkg-web shape exactly: same class
+// Mirrors @kinsh/vodozemac-wasm's pkg-web shape exactly: same class
 // names, same method names, same JSON-string return shapes for the
 // structured outputs (identityKeys, oneTimeKeys, encrypt result, etc.).
 // This is the gate that makes secure-chat-client target-agnostic — the
@@ -28,6 +28,10 @@ const makeRegistry = (finalize: Finalizer) => {
 
 const accountFinalizer = makeRegistry(Native.accountClose);
 const sessionFinalizer = makeRegistry(Native.sessionClose);
+const groupSessionFinalizer = makeRegistry(Native.groupSessionClose);
+const inboundGroupSessionFinalizer = makeRegistry(
+  Native.inboundGroupSessionClose,
+);
 
 /**
  * Olm account — long-lived identity + one-time-key store. Persist via
@@ -41,10 +45,10 @@ export class Account {
   private handle: number | null;
 
   /**
-   * Mirrors `@dtelecom/vodozemac-wasm`'s pkg-web shape: `new Account()`
+   * Mirrors `@kinsh/vodozemac-wasm`'s pkg-web shape: `new Account()`
    * allocates a fresh native account (wasm-bindgen exposes Rust's
-   * `pub fn new() -> Account` as the JS constructor, so consumers like
-   * `@dtelecom/secure-chat-client` use this form directly). When a
+   * `pub fn new() -> Account` as the JS constructor, so consumers
+   * use this form directly). When a
    * `handle` is passed explicitly the wrapper is built around an
    * existing native handle — internal call sites in `createOutbound-
    * Session` / `Session.takeSession` / `Account.fromPickle` use that path.
@@ -249,10 +253,177 @@ export class InboundResult {
 }
 
 /**
+ * Outbound megolm session — one per (group, sender device). The sender
+ * encrypts with this and shares {@link sessionKey} with members (over
+ * Olm); they build an {@link InboundGroupSession} from it.
+ *
+ * Megolm is pinned to version 1 (the Matrix-production format) on all
+ * platforms.
+ */
+export class GroupSession {
+  private handle: number | null;
+
+  /**
+   * `new GroupSession()` allocates a fresh native session (mirrors the
+   * wasm package). Passing a `handle` wraps an existing native handle —
+   * internal path used by {@link fromPickle}.
+   */
+  constructor(handle?: number) {
+    const resolved =
+      typeof handle === "number" ? handle : Native.groupSessionNew();
+    this.handle = resolved;
+    groupSessionFinalizer?.register(this, resolved, this);
+  }
+
+  /** Restore from a JSON pickle produced by {@link pickle}. */
+  static fromPickle(pickle: string): GroupSession {
+    return new GroupSession(Native.groupSessionFromPickle(pickle));
+  }
+
+  private h(): number {
+    if (this.handle === null) {
+      throw new Error("GroupSession has been closed");
+    }
+    return this.handle;
+  }
+
+  sessionId(): string {
+    return Native.groupSessionSessionId(this.h());
+  }
+
+  /**
+   * Base64 session key at the **current** ratchet index. Recipients can
+   * decrypt everything from this index onward.
+   */
+  sessionKey(): string {
+    return Native.groupSessionSessionKey(this.h());
+  }
+
+  /** Ratchet index of the **next** message to be encrypted. */
+  messageIndex(): number {
+    return Native.groupSessionMessageIndex(this.h());
+  }
+
+  /**
+   * Encrypt, returning the base64 megolm message body. No type field —
+   * megolm has a single message kind (contrast with Olm's prekey/normal).
+   */
+  encrypt(plaintext: string): string {
+    return Native.groupSessionEncrypt(this.h(), plaintext);
+  }
+
+  /** Serialize to JSON pickle. */
+  pickle(): string {
+    return Native.groupSessionPickle(this.h());
+  }
+
+  /** Release the native handle eagerly. Safe to call multiple times. */
+  close(): void {
+    if (this.handle !== null) {
+      Native.groupSessionClose(this.handle);
+      groupSessionFinalizer?.unregister(this);
+      this.handle = null;
+    }
+  }
+}
+
+/**
+ * Inbound megolm session — one per received session key. Decrypt-only.
+ *
+ * Replay protection is the application's job: track decrypted
+ * `(sessionId, messageIndex)` pairs and reject duplicates.
+ */
+export class InboundGroupSession {
+  private handle: number | null;
+
+  /**
+   * `new InboundGroupSession(sessionKey)` builds a session from a base64
+   * key produced by {@link GroupSession.sessionKey} (mirrors the wasm
+   * package). Passing a `number` wraps an existing native handle —
+   * internal path used by {@link fromPickle} / {@link import}.
+   */
+  constructor(sessionKeyOrHandle: string | number) {
+    const resolved =
+      typeof sessionKeyOrHandle === "number"
+        ? sessionKeyOrHandle
+        : Native.inboundGroupSessionNew(sessionKeyOrHandle);
+    this.handle = resolved;
+    inboundGroupSessionFinalizer?.register(this, resolved, this);
+  }
+
+  /**
+   * Construct from a base64 **exported** key produced by {@link exportAt}.
+   * Exported keys lose the signing chain, so sessions imported this way
+   * can decrypt but cannot prove who created the session.
+   */
+  static import(exportedSessionKey: string): InboundGroupSession {
+    return new InboundGroupSession(
+      Native.inboundGroupSessionImport(exportedSessionKey),
+    );
+  }
+
+  /** Restore from a JSON pickle produced by {@link pickle}. */
+  static fromPickle(pickle: string): InboundGroupSession {
+    return new InboundGroupSession(
+      Native.inboundGroupSessionFromPickle(pickle),
+    );
+  }
+
+  private h(): number {
+    if (this.handle === null) {
+      throw new Error("InboundGroupSession has been closed");
+    }
+    return this.handle;
+  }
+
+  sessionId(): string {
+    return Native.inboundGroupSessionSessionId(this.h());
+  }
+
+  /** Lowest ratchet index this session can decrypt. */
+  firstKnownIndex(): number {
+    return Native.inboundGroupSessionFirstKnownIndex(this.h());
+  }
+
+  /**
+   * Decrypt a base64 megolm message body. Returns a JSON string
+   * `{ "plaintext": "...", "messageIndex": n }`.
+   */
+  decrypt(message: string): string {
+    return Native.inboundGroupSessionDecrypt(this.h(), message);
+  }
+
+  /**
+   * Export the session key at the given ratchet index (base64), e.g. for
+   * sharing history with a newly joined member. Returns `undefined` when
+   * the index is below {@link firstKnownIndex}; future indexes are
+   * computable by ratcheting forward.
+   */
+  exportAt(index: number): string | undefined {
+    const exported = Native.inboundGroupSessionExportAt(this.h(), index);
+    return exported === "" ? undefined : exported;
+  }
+
+  /** Serialize to JSON pickle. */
+  pickle(): string {
+    return Native.inboundGroupSessionPickle(this.h());
+  }
+
+  /** Release the native handle eagerly. Safe to call multiple times. */
+  close(): void {
+    if (this.handle !== null) {
+      Native.inboundGroupSessionClose(this.handle);
+      inboundGroupSessionFinalizer?.unregister(this);
+      this.handle = null;
+    }
+  }
+}
+
+/**
  * No-op on RN — the native libs are loaded at TurboModule registration
  * time, before any JS code runs. Exists only so the package's API
- * matches `@dtelecom/vodozemac-wasm`'s `await init()` shape, letting
- * `secure-chat-client` use the same bootstrap path on web/node/RN.
+ * matches `@kinsh/vodozemac-wasm`'s `await init()` shape, letting
+ * the consuming SDK use the same bootstrap path on web/node/RN.
  */
 export default async function init(): Promise<void> {
   // Touching Native here triggers the TurboModule registration check

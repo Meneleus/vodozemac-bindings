@@ -3,8 +3,8 @@ name = "vodozemac-ffi"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "UniFFI bindings for vodozemac (Olm primitives) — powers the iOS xcframework + Android AAR used by @dtelecom/vodozemac-rn"
-repository = "https://github.com/dTelecom/vodozemac-wasm"
+description = "UniFFI bindings for vodozemac (Olm + Megolm primitives) — powers the iOS xcframework + Android AAR used by @kinsh/vodozemac-rn"
+repository = "https://github.com/Meneleus/vodozemac-bindings"
 publish = false
 
 [lib]

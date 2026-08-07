@@ -658,6 +658,26 @@ internal object IntegrityCheckingUniffiLib {
     ): Short
     external fun uniffi_vodozemac_ffi_checksum_method_account_sign(
     ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_groupsession_encrypt(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_groupsession_message_index(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_groupsession_pickle(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_groupsession_session_id(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_groupsession_session_key(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_decrypt(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_export_at(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_first_known_index(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_pickle(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_session_id(
+    ): Short
     external fun uniffi_vodozemac_ffi_checksum_method_inboundresult_plaintext(
     ): Short
     external fun uniffi_vodozemac_ffi_checksum_method_inboundresult_sender_identity_key(
@@ -677,6 +697,16 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_vodozemac_ffi_checksum_constructor_account_from_pickle(
     ): Short
     external fun uniffi_vodozemac_ffi_checksum_constructor_account_new(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_constructor_groupsession_from_pickle(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_constructor_groupsession_new(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_from_pickle(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_import_session(
+    ): Short
+    external fun uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_new(
     ): Short
     external fun uniffi_vodozemac_ffi_checksum_constructor_session_from_pickle(
     ): Short
@@ -699,167 +729,205 @@ internal object UniffiLib {
         
     }
     external fun uniffi_vodozemac_ffi_fn_clone_account(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_free_account(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_constructor_account_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_constructor_account_new(uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_method_account_create_inbound_session(`ptr`: Long,`prekeyMessageBody`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_method_account_create_outbound_session(`ptr`: Long,`theirIdentityKey`: RustBuffer.ByValue,`theirOneTimeKey`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_method_account_fallback_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_account_generate_fallback_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_method_account_generate_one_time_keys(`ptr`: Long,`count`: Int,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_method_account_identity_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_account_mark_keys_as_published(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_method_account_max_number_of_one_time_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Int
-    external fun uniffi_vodozemac_ffi_fn_method_account_one_time_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_account_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_account_sign(`ptr`: Long,`message`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_clone_inboundresult(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_free_inboundresult(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_method_inboundresult_plaintext(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_inboundresult_sender_identity_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_inboundresult_take_session(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_clone_session(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_free_session(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun uniffi_vodozemac_ffi_fn_constructor_session_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun uniffi_vodozemac_ffi_fn_method_session_decrypt(`ptr`: Long,`messageType`: Byte,`body`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_session_encrypt(`ptr`: Long,`plaintext`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_session_has_received_message(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Byte
-    external fun uniffi_vodozemac_ffi_fn_method_session_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun uniffi_vodozemac_ffi_fn_method_session_session_id(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun ffi_vodozemac_ffi_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun ffi_vodozemac_ffi_rustbuffer_from_bytes(`bytes`: ForeignBytes.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun ffi_vodozemac_ffi_rustbuffer_free(`buf`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
-    external fun ffi_vodozemac_ffi_rustbuffer_reserve(`buf`: RustBuffer.ByValue,`additional`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun ffi_vodozemac_ffi_rust_future_poll_u8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_u8(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_u8(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_u8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Byte
-    external fun ffi_vodozemac_ffi_rust_future_poll_i8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_i8(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_i8(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_i8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Byte
-    external fun ffi_vodozemac_ffi_rust_future_poll_u16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_u16(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_u16(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_u16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Short
-    external fun ffi_vodozemac_ffi_rust_future_poll_i16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_i16(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_i16(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_i16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Short
-    external fun ffi_vodozemac_ffi_rust_future_poll_u32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_u32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_u32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_u32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Int
-    external fun ffi_vodozemac_ffi_rust_future_poll_i32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_i32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_i32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_i32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Int
-    external fun ffi_vodozemac_ffi_rust_future_poll_u64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_u64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_u64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_u64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun ffi_vodozemac_ffi_rust_future_poll_i64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_i64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_i64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_i64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Long
-    external fun ffi_vodozemac_ffi_rust_future_poll_f32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_f32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_f32(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_f32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Float
-    external fun ffi_vodozemac_ffi_rust_future_poll_f64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_f64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_f64(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_f64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Double
-    external fun ffi_vodozemac_ffi_rust_future_poll_rust_buffer(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_rust_buffer(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_rust_buffer(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_rust_buffer(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): RustBuffer.ByValue
-    external fun ffi_vodozemac_ffi_rust_future_poll_void(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_cancel_void(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_free_void(`handle`: Long,
-    ): Unit
-    external fun ffi_vodozemac_ffi_rust_future_complete_void(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
-    ): Unit
+): Long
+external fun uniffi_vodozemac_ffi_fn_free_account(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_constructor_account_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_constructor_account_new(uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_account_create_inbound_session(`ptr`: Long,`prekeyMessageBody`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_account_create_outbound_session(`ptr`: Long,`theirIdentityKey`: RustBuffer.ByValue,`theirOneTimeKey`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_account_fallback_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_account_generate_fallback_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_method_account_generate_one_time_keys(`ptr`: Long,`count`: Int,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_method_account_identity_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_account_mark_keys_as_published(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_method_account_max_number_of_one_time_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Int
+external fun uniffi_vodozemac_ffi_fn_method_account_one_time_keys(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_account_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_account_sign(`ptr`: Long,`message`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_clone_groupsession(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_free_groupsession(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_constructor_groupsession_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_constructor_groupsession_new(uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_groupsession_encrypt(`ptr`: Long,`plaintext`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_groupsession_message_index(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Int
+external fun uniffi_vodozemac_ffi_fn_method_groupsession_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_groupsession_session_id(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_groupsession_session_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_clone_inboundgroupsession(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_free_inboundgroupsession(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_import_session(`exportedSessionKey`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_new(`sessionKey`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_inboundgroupsession_decrypt(`ptr`: Long,`message`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_inboundgroupsession_export_at(`ptr`: Long,`index`: Int,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_inboundgroupsession_first_known_index(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Int
+external fun uniffi_vodozemac_ffi_fn_method_inboundgroupsession_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_inboundgroupsession_session_id(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_clone_inboundresult(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_free_inboundresult(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_method_inboundresult_plaintext(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_inboundresult_sender_identity_key(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_inboundresult_take_session(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_clone_session(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_free_session(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun uniffi_vodozemac_ffi_fn_constructor_session_from_pickle(`pickle`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun uniffi_vodozemac_ffi_fn_method_session_decrypt(`ptr`: Long,`messageType`: Byte,`body`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_session_encrypt(`ptr`: Long,`plaintext`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_session_has_received_message(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Byte
+external fun uniffi_vodozemac_ffi_fn_method_session_pickle(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun uniffi_vodozemac_ffi_fn_method_session_session_id(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun ffi_vodozemac_ffi_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun ffi_vodozemac_ffi_rustbuffer_from_bytes(`bytes`: ForeignBytes.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun ffi_vodozemac_ffi_rustbuffer_free(`buf`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
+external fun ffi_vodozemac_ffi_rustbuffer_reserve(`buf`: RustBuffer.ByValue,`additional`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun ffi_vodozemac_ffi_rust_future_poll_u8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_u8(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_u8(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_u8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Byte
+external fun ffi_vodozemac_ffi_rust_future_poll_i8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_i8(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_i8(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_i8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Byte
+external fun ffi_vodozemac_ffi_rust_future_poll_u16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_u16(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_u16(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_u16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Short
+external fun ffi_vodozemac_ffi_rust_future_poll_i16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_i16(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_i16(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_i16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Short
+external fun ffi_vodozemac_ffi_rust_future_poll_u32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_u32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_u32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_u32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Int
+external fun ffi_vodozemac_ffi_rust_future_poll_i32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_i32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_i32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_i32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Int
+external fun ffi_vodozemac_ffi_rust_future_poll_u64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_u64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_u64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_u64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun ffi_vodozemac_ffi_rust_future_poll_i64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_i64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_i64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_i64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Long
+external fun ffi_vodozemac_ffi_rust_future_poll_f32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_f32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_f32(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_f32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Float
+external fun ffi_vodozemac_ffi_rust_future_poll_f64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_f64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_f64(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_f64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Double
+external fun ffi_vodozemac_ffi_rust_future_poll_rust_buffer(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_rust_buffer(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_rust_buffer(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_rust_buffer(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): RustBuffer.ByValue
+external fun ffi_vodozemac_ffi_rust_future_poll_void(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_cancel_void(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_free_void(`handle`: Long,
+): Unit
+external fun ffi_vodozemac_ffi_rust_future_complete_void(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+): Unit
 
-        
+    
 }
 
 private fun uniffiCheckContractApiVersion(lib: IntegrityCheckingUniffiLib) {
@@ -906,6 +974,36 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_vodozemac_ffi_checksum_method_account_sign() != 52185.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_groupsession_encrypt() != 32020.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_groupsession_message_index() != 63805.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_groupsession_pickle() != 62234.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_groupsession_session_id() != 53577.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_groupsession_session_key() != 60369.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_decrypt() != 26383.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_export_at() != 26640.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_first_known_index() != 30820.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_pickle() != 43868.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_method_inboundgroupsession_session_id() != 56506.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_vodozemac_ffi_checksum_method_inboundresult_plaintext() != 19641.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -934,6 +1032,21 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_vodozemac_ffi_checksum_constructor_account_new() != 3085.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_constructor_groupsession_from_pickle() != 14879.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_constructor_groupsession_new() != 56507.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_from_pickle() != 36317.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_import_session() != 16368.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_vodozemac_ffi_checksum_constructor_inboundgroupsession_new() != 54836.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_vodozemac_ffi_checksum_constructor_session_from_pickle() != 34200.toShort()) {
@@ -1809,6 +1922,778 @@ public object FfiConverterTypeAccount: FfiConverter<Account, Long> {
 //
 
 
+/**
+ * Outbound megolm session — one per (circle, sender device). The sender
+ * encrypts with this and shares `session_key()` with members over Olm.
+ */
+public interface GroupSessionInterface {
+    
+    /**
+     * Encrypt, returning the base64 megolm message body. No type field —
+     * megolm has a single message kind (contrast with Olm's prekey/normal).
+     */
+    fun `encrypt`(`plaintext`: kotlin.String): kotlin.String
+    
+    /**
+     * Ratchet index of the **next** message to be encrypted.
+     */
+    fun `messageIndex`(): kotlin.UInt
+    
+    /**
+     * Returns the JSON pickle string.
+     */
+    fun `pickle`(): kotlin.String
+    
+    fun `sessionId`(): kotlin.String
+    
+    /**
+     * Base64 session key at the **current** ratchet index. Share this with
+     * group members (over Olm); they construct an `InboundGroupSession`
+     * from it and can decrypt everything from this index onward.
+     */
+    fun `sessionKey`(): kotlin.String
+    
+    companion object
+}
+
+/**
+ * Outbound megolm session — one per (circle, sender device). The sender
+ * encrypts with this and shares `session_key()` with members over Olm.
+ */
+open class GroupSession: Disposable, AutoCloseable, GroupSessionInterface
+{
+
+    @Suppress("UNUSED_PARAMETER")
+    /**
+     * @suppress
+     */
+    constructor(withHandle: UniffiWithHandle, handle: Long) {
+        this.handle = handle
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(handle))
+    }
+
+    /**
+     * @suppress
+     *
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noHandle: NoHandle) {
+        this.handle = 0
+        this.cleanable = null
+    }
+    constructor() :
+        this(UniffiWithHandle, 
+    uniffiRustCall() { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_constructor_groupsession_new(
+    
+        _status)
+}
+    )
+
+    protected val handle: Long
+    protected val cleanable: UniffiCleaner.Cleanable?
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithHandle(block: (handle: Long) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the handle being freed concurrently.
+        try {
+            return block(this.uniffiCloneHandle())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val handle: Long) : Runnable {
+        override fun run() {
+            if (handle == 0.toLong()) {
+                // Fake object created with `NoHandle`, don't try to free.
+                return;
+            }
+            uniffiRustCall { status ->
+                UniffiLib.uniffi_vodozemac_ffi_fn_free_groupsession(handle, status)
+            }
+        }
+    }
+
+    /**
+     * @suppress
+     */
+    fun uniffiCloneHandle(): Long {
+        if (handle == 0.toLong()) {
+            throw InternalException("uniffiCloneHandle() called on NoHandle object");
+        }
+        return uniffiRustCall() { status ->
+            UniffiLib.uniffi_vodozemac_ffi_fn_clone_groupsession(handle, status)
+        }
+    }
+
+    
+    /**
+     * Encrypt, returning the base64 megolm message body. No type field —
+     * megolm has a single message kind (contrast with Olm's prekey/normal).
+     */
+    @Throws(VodozemacException::class)override fun `encrypt`(`plaintext`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_groupsession_encrypt(
+        it,
+        FfiConverterString.lower(`plaintext`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Ratchet index of the **next** message to be encrypted.
+     */
+    @Throws(VodozemacException::class)override fun `messageIndex`(): kotlin.UInt {
+            return FfiConverterUInt.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_groupsession_message_index(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Returns the JSON pickle string.
+     */
+    @Throws(VodozemacException::class)override fun `pickle`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_groupsession_pickle(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(VodozemacException::class)override fun `sessionId`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_groupsession_session_id(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Base64 session key at the **current** ratchet index. Share this with
+     * group members (over Olm); they construct an `InboundGroupSession`
+     * from it and can decrypt everything from this index onward.
+     */
+    @Throws(VodozemacException::class)override fun `sessionKey`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_groupsession_session_key(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+
+    
+
+
+    
+    companion object {
+        
+    /**
+     * Restore from a JSON pickle produced by `pickle()`.
+     */
+    @Throws(VodozemacException::class) fun `fromPickle`(`pickle`: kotlin.String): GroupSession {
+            return FfiConverterTypeGroupSession.lift(
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_constructor_groupsession_from_pickle(
+    
+        FfiConverterString.lower(`pickle`),_status)
+}
+    )
+    }
+    
+
+        
+    }
+    
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupSession: FfiConverter<GroupSession, Long> {
+    override fun lower(value: GroupSession): Long {
+        return value.uniffiCloneHandle()
+    }
+
+    override fun lift(value: Long): GroupSession {
+        return GroupSession(UniffiWithHandle, value)
+    }
+
+    override fun read(buf: ByteBuffer): GroupSession {
+        return lift(buf.getLong())
+    }
+
+    override fun allocationSize(value: GroupSession) = 8UL
+
+    override fun write(value: GroupSession, buf: ByteBuffer) {
+        buf.putLong(lower(value))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a handle
+// to the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque handle to the underlying Rust struct.
+//     Method calls need to read this handle from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its handle should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the handle, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the handle, but is interrupted
+//      before it can pass the handle over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read handle value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+/**
+ * Inbound megolm session — one per received session key. Decrypt-only.
+ */
+public interface InboundGroupSessionInterface {
+    
+    /**
+     * Decrypt a base64 megolm message body. Returns a JSON string
+     * `{ "plaintext": "...", "messageIndex": n }`.
+     */
+    fun `decrypt`(`message`: kotlin.String): kotlin.String
+    
+    /**
+     * Export the session key at the given ratchet index (base64), e.g. for
+     * sharing history with a newly joined member. Returns `None` when the
+     * index is below `first_known_index()`; future indexes are computable
+     * by ratcheting forward.
+     */
+    fun `exportAt`(`index`: kotlin.UInt): kotlin.String?
+    
+    /**
+     * Lowest ratchet index this session can decrypt.
+     */
+    fun `firstKnownIndex`(): kotlin.UInt
+    
+    /**
+     * Returns the JSON pickle string.
+     */
+    fun `pickle`(): kotlin.String
+    
+    fun `sessionId`(): kotlin.String
+    
+    companion object
+}
+
+/**
+ * Inbound megolm session — one per received session key. Decrypt-only.
+ */
+open class InboundGroupSession: Disposable, AutoCloseable, InboundGroupSessionInterface
+{
+
+    @Suppress("UNUSED_PARAMETER")
+    /**
+     * @suppress
+     */
+    constructor(withHandle: UniffiWithHandle, handle: Long) {
+        this.handle = handle
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(handle))
+    }
+
+    /**
+     * @suppress
+     *
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noHandle: NoHandle) {
+        this.handle = 0
+        this.cleanable = null
+    }
+    /**
+     * Construct from a base64 session key produced by
+     * `GroupSession::session_key()`.
+     */
+    constructor(`sessionKey`: kotlin.String) :
+        this(UniffiWithHandle, 
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_new(
+    
+        FfiConverterString.lower(`sessionKey`),_status)
+}
+    )
+
+    protected val handle: Long
+    protected val cleanable: UniffiCleaner.Cleanable?
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithHandle(block: (handle: Long) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the handle being freed concurrently.
+        try {
+            return block(this.uniffiCloneHandle())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val handle: Long) : Runnable {
+        override fun run() {
+            if (handle == 0.toLong()) {
+                // Fake object created with `NoHandle`, don't try to free.
+                return;
+            }
+            uniffiRustCall { status ->
+                UniffiLib.uniffi_vodozemac_ffi_fn_free_inboundgroupsession(handle, status)
+            }
+        }
+    }
+
+    /**
+     * @suppress
+     */
+    fun uniffiCloneHandle(): Long {
+        if (handle == 0.toLong()) {
+            throw InternalException("uniffiCloneHandle() called on NoHandle object");
+        }
+        return uniffiRustCall() { status ->
+            UniffiLib.uniffi_vodozemac_ffi_fn_clone_inboundgroupsession(handle, status)
+        }
+    }
+
+    
+    /**
+     * Decrypt a base64 megolm message body. Returns a JSON string
+     * `{ "plaintext": "...", "messageIndex": n }`.
+     */
+    @Throws(VodozemacException::class)override fun `decrypt`(`message`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_inboundgroupsession_decrypt(
+        it,
+        FfiConverterString.lower(`message`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Export the session key at the given ratchet index (base64), e.g. for
+     * sharing history with a newly joined member. Returns `None` when the
+     * index is below `first_known_index()`; future indexes are computable
+     * by ratcheting forward.
+     */
+    @Throws(VodozemacException::class)override fun `exportAt`(`index`: kotlin.UInt): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_inboundgroupsession_export_at(
+        it,
+        FfiConverterUInt.lower(`index`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Lowest ratchet index this session can decrypt.
+     */
+    @Throws(VodozemacException::class)override fun `firstKnownIndex`(): kotlin.UInt {
+            return FfiConverterUInt.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_inboundgroupsession_first_known_index(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Returns the JSON pickle string.
+     */
+    @Throws(VodozemacException::class)override fun `pickle`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_inboundgroupsession_pickle(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(VodozemacException::class)override fun `sessionId`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_method_inboundgroupsession_session_id(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+
+    
+
+
+    
+    companion object {
+        
+    /**
+     * Restore from a JSON pickle produced by `pickle()`.
+     */
+    @Throws(VodozemacException::class) fun `fromPickle`(`pickle`: kotlin.String): InboundGroupSession {
+            return FfiConverterTypeInboundGroupSession.lift(
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_from_pickle(
+    
+        FfiConverterString.lower(`pickle`),_status)
+}
+    )
+    }
+    
+
+        
+    /**
+     * Construct from a base64 **exported** key produced by `export_at()`.
+     * Exported keys lose the signing chain, so sessions imported this way
+     * can decrypt but cannot prove who created the session.
+     *
+     * Named `import_session` (not `import`) because `import` is a hard
+     * keyword in both Kotlin and Swift.
+     */
+    @Throws(VodozemacException::class) fun `importSession`(`exportedSessionKey`: kotlin.String): InboundGroupSession {
+            return FfiConverterTypeInboundGroupSession.lift(
+    uniffiRustCallWithError(VodozemacException) { _status ->
+    UniffiLib.uniffi_vodozemac_ffi_fn_constructor_inboundgroupsession_import_session(
+    
+        FfiConverterString.lower(`exportedSessionKey`),_status)
+}
+    )
+    }
+    
+
+        
+    }
+    
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeInboundGroupSession: FfiConverter<InboundGroupSession, Long> {
+    override fun lower(value: InboundGroupSession): Long {
+        return value.uniffiCloneHandle()
+    }
+
+    override fun lift(value: Long): InboundGroupSession {
+        return InboundGroupSession(UniffiWithHandle, value)
+    }
+
+    override fun read(buf: ByteBuffer): InboundGroupSession {
+        return lift(buf.getLong())
+    }
+
+    override fun allocationSize(value: InboundGroupSession) = 8UL
+
+    override fun write(value: InboundGroupSession, buf: ByteBuffer) {
+        buf.putLong(lower(value))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a handle
+// to the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque handle to the underlying Rust struct.
+//     Method calls need to read this handle from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its handle should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the handle, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the handle, but is interrupted
+//      before it can pass the handle over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read handle value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
 public interface InboundResultInterface {
     
     fun `plaintext`(): kotlin.String
@@ -2557,5 +3442,37 @@ public object FfiConverterTypeVodozemacError : FfiConverterRustBuffer<VodozemacE
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
     }
 
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterOptionalString: FfiConverterRustBuffer<kotlin.String?> {
+    override fun read(buf: ByteBuffer): kotlin.String? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterString.read(buf)
+    }
+
+    override fun allocationSize(value: kotlin.String?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterString.allocationSize(value)
+        }
+    }
+
+    override fun write(value: kotlin.String?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterString.write(value, buf)
+        }
+    }
 }
 

@@ -12,6 +12,11 @@ use std::collections::BTreeMap;
 
 use serde::Serialize;
 use vodozemac::{
+    megolm::{
+        ExportedSessionKey, GroupSession as VGroupSession, GroupSessionPickle,
+        InboundGroupSession as VInboundGroupSession, InboundGroupSessionPickle, MegolmMessage,
+        SessionConfig as MegolmSessionConfig, SessionKey,
+    },
     olm::{
         Account as VAccount, AccountPickle, OlmMessage, PreKeyMessage, Session as VSession,
         SessionConfig, SessionPickle,
@@ -297,6 +302,163 @@ impl InboundResult {
     #[wasm_bindgen(getter, js_name = senderIdentityKey)]
     pub fn sender_identity_key(&self) -> String {
         self.sender_identity_key.clone()
+    }
+}
+
+// ── Megolm (group sessions) ────────────────────────────────────────────────
+//
+// Pinned to megolm **version 1** — the format Matrix runs in production
+// (AES-256 + HMAC truncated to 8 bytes). vodozemac's version 2 (untruncated
+// MAC) is gated behind the `experimental-session-config` feature and not
+// production-vetted, so we don't use it. All platforms (wasm + RN) must use
+// the same version.
+
+fn megolm_config() -> MegolmSessionConfig {
+    MegolmSessionConfig::version_1()
+}
+
+/// Decrypt result for `InboundGroupSession.decrypt()`.
+#[derive(Serialize)]
+struct GroupDecryptResultJs {
+    plaintext: String,
+    /// Ratchet index of the decrypted message. The application layer is
+    /// responsible for replay protection: track (sessionId, messageIndex)
+    /// pairs and reject duplicates.
+    #[serde(rename = "messageIndex")]
+    message_index: u32,
+}
+
+/// Outbound megolm session — one per (circle, sender device). The sender
+/// encrypts with this and shares `sessionKey()` with members over Olm.
+#[wasm_bindgen]
+pub struct GroupSession {
+    inner: VGroupSession,
+}
+
+#[wasm_bindgen]
+impl GroupSession {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> GroupSession {
+        GroupSession { inner: VGroupSession::new(megolm_config()) }
+    }
+
+    /// Restore from a JSON pickle produced by `pickle()`.
+    #[wasm_bindgen(js_name = fromPickle)]
+    pub fn from_pickle(pickle: &str) -> Result<GroupSession, JsValue> {
+        let parsed: GroupSessionPickle = serde_json::from_str(pickle).map_err(js_err)?;
+        Ok(GroupSession { inner: VGroupSession::from_pickle(parsed) })
+    }
+
+    #[wasm_bindgen(js_name = sessionId)]
+    pub fn session_id(&self) -> String {
+        self.inner.session_id()
+    }
+
+    /// Base64 session key at the **current** ratchet index. Share this with
+    /// group members (over Olm); they construct an `InboundGroupSession`
+    /// from it and can decrypt everything from this index onward.
+    #[wasm_bindgen(js_name = sessionKey)]
+    pub fn session_key(&self) -> String {
+        self.inner.session_key().to_base64()
+    }
+
+    /// Ratchet index of the **next** message to be encrypted.
+    #[wasm_bindgen(js_name = messageIndex)]
+    pub fn message_index(&self) -> u32 {
+        self.inner.message_index()
+    }
+
+    /// Encrypt, returning the base64 megolm message body. No type field —
+    /// megolm has a single message kind (contrast with Olm's prekey/normal).
+    pub fn encrypt(&mut self, plaintext: &str) -> String {
+        self.inner.encrypt(plaintext.as_bytes()).to_base64()
+    }
+
+    /// Returns the JSON pickle string.
+    pub fn pickle(&self) -> Result<String, JsValue> {
+        let p = self.inner.pickle();
+        serde_json::to_string(&p).map_err(js_err)
+    }
+}
+
+impl Default for GroupSession {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// Inbound megolm session — one per received session key. Decrypt-only.
+#[wasm_bindgen]
+pub struct InboundGroupSession {
+    inner: VInboundGroupSession,
+}
+
+#[wasm_bindgen]
+impl InboundGroupSession {
+    /// Construct from a base64 session key produced by
+    /// `GroupSession.sessionKey()`.
+    #[wasm_bindgen(constructor)]
+    pub fn new(session_key: &str) -> Result<InboundGroupSession, JsValue> {
+        let key = SessionKey::from_base64(session_key).map_err(js_err)?;
+        Ok(InboundGroupSession {
+            inner: VInboundGroupSession::new(&key, megolm_config()),
+        })
+    }
+
+    /// Construct from a base64 **exported** key produced by `exportAt()`.
+    /// Exported keys lose the signing chain, so sessions imported this way
+    /// can decrypt but cannot prove who created the session.
+    #[wasm_bindgen(js_name = import)]
+    pub fn import(exported_session_key: &str) -> Result<InboundGroupSession, JsValue> {
+        let key = ExportedSessionKey::from_base64(exported_session_key).map_err(js_err)?;
+        Ok(InboundGroupSession {
+            inner: VInboundGroupSession::import(&key, megolm_config()),
+        })
+    }
+
+    /// Restore from a JSON pickle produced by `pickle()`.
+    #[wasm_bindgen(js_name = fromPickle)]
+    pub fn from_pickle(pickle: &str) -> Result<InboundGroupSession, JsValue> {
+        let parsed: InboundGroupSessionPickle =
+            serde_json::from_str(pickle).map_err(js_err)?;
+        Ok(InboundGroupSession { inner: VInboundGroupSession::from_pickle(parsed) })
+    }
+
+    #[wasm_bindgen(js_name = sessionId)]
+    pub fn session_id(&self) -> String {
+        self.inner.session_id()
+    }
+
+    /// Lowest ratchet index this session can decrypt.
+    #[wasm_bindgen(js_name = firstKnownIndex)]
+    pub fn first_known_index(&self) -> u32 {
+        self.inner.first_known_index()
+    }
+
+    /// Decrypt a base64 megolm message body. Returns a JSON string
+    /// `{ "plaintext": "...", "messageIndex": n }`.
+    pub fn decrypt(&mut self, message: &str) -> Result<String, JsValue> {
+        let msg = MegolmMessage::from_base64(message).map_err(js_err)?;
+        let decrypted = self.inner.decrypt(&msg).map_err(js_err)?;
+        let out = GroupDecryptResultJs {
+            plaintext: String::from_utf8(decrypted.plaintext).map_err(js_err)?,
+            message_index: decrypted.message_index,
+        };
+        serde_json::to_string(&out).map_err(js_err)
+    }
+
+    /// Export the session key at the given ratchet index (base64), e.g. for
+    /// sharing history with a newly joined member. Returns `undefined` when
+    /// the index is below `firstKnownIndex()`.
+    #[wasm_bindgen(js_name = exportAt)]
+    pub fn export_at(&mut self, index: u32) -> Option<String> {
+        self.inner.export_at(index).map(|k| k.to_base64())
+    }
+
+    /// Returns the JSON pickle string.
+    pub fn pickle(&self) -> Result<String, JsValue> {
+        let p = self.inner.pickle();
+        serde_json::to_string(&p).map_err(js_err)
     }
 }
 

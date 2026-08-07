@@ -68,6 +68,36 @@ export interface Spec extends TurboModule {
   sessionHasReceivedMessage(handle: number): boolean;
   sessionPickle(handle: number): string;
   sessionClose(handle: number): boolean;
+
+  // ── GroupSession (outbound megolm) ─────────────────────────────────────
+
+  groupSessionNew(): number;
+  groupSessionFromPickle(pickle: string): number;
+  groupSessionSessionId(handle: number): string;
+  groupSessionSessionKey(handle: number): string;
+  groupSessionMessageIndex(handle: number): number;
+  groupSessionEncrypt(handle: number, plaintext: string): string;
+  groupSessionPickle(handle: number): string;
+  groupSessionClose(handle: number): boolean;
+
+  // ── InboundGroupSession (megolm, decrypt-only) ─────────────────────────
+
+  inboundGroupSessionNew(sessionKey: string): number;
+  inboundGroupSessionImport(exportedSessionKey: string): number;
+  inboundGroupSessionFromPickle(pickle: string): number;
+  inboundGroupSessionSessionId(handle: number): string;
+  inboundGroupSessionFirstKnownIndex(handle: number): number;
+  /** Returns JSON `{ "plaintext": "...", "messageIndex": n }`. */
+  inboundGroupSessionDecrypt(handle: number, message: string): string;
+  /**
+   * Returns the exported key (base64), or the empty string when the index
+   * is below firstKnownIndex. Empty-string sentinel instead of a nullable
+   * return keeps the codegen shape simple; the JS wrapper converts it to
+   * `undefined`. A real exported key is never empty.
+   */
+  inboundGroupSessionExportAt(handle: number, index: number): string;
+  inboundGroupSessionPickle(handle: number): string;
+  inboundGroupSessionClose(handle: number): boolean;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>("Vodozemac");

@@ -185,6 +185,120 @@ RCT_EXPORT_MODULE()
     return [VodozemacImpl sessionClose:@(handle)];
 }
 
+#pragma mark - GroupSession
+
+- (NSNumber *)groupSessionNew {
+    return [VodozemacImpl groupSessionNew];
+}
+
+- (NSNumber *)groupSessionFromPickle:(NSString *)pickle {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl groupSessionFromPickle:pickle error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)groupSessionSessionId:(double)handle {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl groupSessionSessionId:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)groupSessionSessionKey:(double)handle {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl groupSessionSessionKey:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)groupSessionMessageIndex:(double)handle {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl groupSessionMessageIndex:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)groupSessionEncrypt:(double)handle plaintext:(NSString *)plaintext {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl groupSessionEncrypt:@(handle) plaintext:plaintext error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)groupSessionPickle:(double)handle {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl groupSessionPickle:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)groupSessionClose:(double)handle {
+    return [VodozemacImpl groupSessionClose:@(handle)];
+}
+
+#pragma mark - InboundGroupSession
+
+- (NSNumber *)inboundGroupSessionNew:(NSString *)sessionKey {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl inboundGroupSessionNew:sessionKey error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)inboundGroupSessionImport:(NSString *)exportedSessionKey {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl inboundGroupSessionImport:exportedSessionKey error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)inboundGroupSessionFromPickle:(NSString *)pickle {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl inboundGroupSessionFromPickle:pickle error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)inboundGroupSessionSessionId:(double)handle {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl inboundGroupSessionSessionId:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)inboundGroupSessionFirstKnownIndex:(double)handle {
+    NSError *err = nil;
+    NSNumber *r = [VodozemacImpl inboundGroupSessionFirstKnownIndex:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)inboundGroupSessionDecrypt:(double)handle message:(NSString *)message {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl inboundGroupSessionDecrypt:@(handle) message:message error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)inboundGroupSessionExportAt:(double)handle index:(double)index {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl inboundGroupSessionExportAt:@(handle) index:@(index) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSString *)inboundGroupSessionPickle:(double)handle {
+    NSError *err = nil;
+    NSString *r = [VodozemacImpl inboundGroupSessionPickle:@(handle) error:&err];
+    if (err) { @throw [NSException exceptionWithName:@"Vodozemac" reason:err.localizedDescription userInfo:nil]; }
+    return r;
+}
+
+- (NSNumber *)inboundGroupSessionClose:(double)handle {
+    return [VodozemacImpl inboundGroupSessionClose:@(handle)];
+}
+
 #pragma mark - TurboModule glue
 
 // Returns the JSI binding for this module — RN's codegen requires this.

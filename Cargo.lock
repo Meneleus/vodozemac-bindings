@@ -346,19 +346,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dtelecom-vodozemac-wasm"
-version = "0.1.0"
-dependencies = [
- "getrandom 0.2.17",
- "js-sys",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "vodozemac",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "ed25519"
 version = "2.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -601,6 +588,19 @@ dependencies = [
  "cfg-if",
  "futures-util",
  "once_cell",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "kinsh-vodozemac-wasm"
+version = "0.4.0"
+dependencies = [
+ "getrandom 0.2.17",
+ "js-sys",
+ "serde",
+ "serde-wasm-bindgen",
+ "serde_json",
+ "vodozemac",
  "wasm-bindgen",
 ]
 

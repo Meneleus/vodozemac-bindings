@@ -1,10 +1,10 @@
 [package]
-name = "dtelecom-vodozemac-wasm"
-version = "0.1.0"
+name = "kinsh-vodozemac-wasm"
+version = "0.4.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "Browser WASM bindings for vodozemac (Olm primitives), tailored for non-Matrix chat use"
-repository = "https://github.com/dTelecom/vodozemac-wasm"
+description = "Browser/Node WASM bindings for vodozemac (Olm + Megolm primitives), tailored for non-Matrix chat use"
+repository = "https://github.com/Meneleus/vodozemac-bindings"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

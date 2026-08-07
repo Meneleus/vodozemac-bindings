@@ -34,6 +34,8 @@ public class VodozemacImpl: NSObject {
     private static var nextHandle: Int64 = 1
     private static var accounts: [Int64: Account] = [:]
     private static var sessions: [Int64: Session] = [:]
+    private static var groupSessions: [Int64: GroupSession] = [:]
+    private static var inboundGroupSessions: [Int64: InboundGroupSession] = [:]
 
     private static func allocHandle() -> Int64 {
         lock.lock()
@@ -76,6 +78,44 @@ public class VodozemacImpl: NSObject {
                 domain: VodozemacErrorBridge.domain,
                 code: 2,
                 userInfo: [NSLocalizedDescriptionKey: "no session for handle \(h)"]
+            )
+        }
+        return s
+    }
+
+    private static func registerGroupSession(_ s: GroupSession) -> Int64 {
+        let h = allocHandle()
+        lock.lock(); defer { lock.unlock() }
+        groupSessions[h] = s
+        return h
+    }
+
+    private static func registerInboundGroupSession(_ s: InboundGroupSession) -> Int64 {
+        let h = allocHandle()
+        lock.lock(); defer { lock.unlock() }
+        inboundGroupSessions[h] = s
+        return h
+    }
+
+    private static func getGroupSession(_ h: Int64) throws -> GroupSession {
+        lock.lock(); defer { lock.unlock() }
+        guard let s = groupSessions[h] else {
+            throw NSError(
+                domain: VodozemacErrorBridge.domain,
+                code: 3,
+                userInfo: [NSLocalizedDescriptionKey: "no group session for handle \(h)"]
+            )
+        }
+        return s
+    }
+
+    private static func getInboundGroupSession(_ h: Int64) throws -> InboundGroupSession {
+        lock.lock(); defer { lock.unlock() }
+        guard let s = inboundGroupSessions[h] else {
+            throw NSError(
+                domain: VodozemacErrorBridge.domain,
+                code: 4,
+                userInfo: [NSLocalizedDescriptionKey: "no inbound group session for handle \(h)"]
             )
         }
         return s
@@ -194,6 +234,87 @@ public class VodozemacImpl: NSObject {
     @objc public static func sessionClose(_ handle: NSNumber) -> NSNumber {
         lock.lock(); defer { lock.unlock() }
         sessions.removeValue(forKey: handle.int64Value)
+        return NSNumber(value: true)
+    }
+
+    // ── GroupSession methods (outbound megolm) ─────────────────────────
+
+    @objc public static func groupSessionNew() -> NSNumber {
+        return NSNumber(value: registerGroupSession(GroupSession()))
+    }
+
+    @objc public static func groupSessionFromPickle(_ pickle: String) throws -> NSNumber {
+        let s = try GroupSession.fromPickle(pickle: pickle)
+        return NSNumber(value: registerGroupSession(s))
+    }
+
+    @objc public static func groupSessionSessionId(_ handle: NSNumber) throws -> String {
+        return try getGroupSession(handle.int64Value).sessionId()
+    }
+
+    @objc public static func groupSessionSessionKey(_ handle: NSNumber) throws -> String {
+        return try getGroupSession(handle.int64Value).sessionKey()
+    }
+
+    @objc public static func groupSessionMessageIndex(_ handle: NSNumber) throws -> NSNumber {
+        return NSNumber(value: try getGroupSession(handle.int64Value).messageIndex())
+    }
+
+    @objc public static func groupSessionEncrypt(_ handle: NSNumber, plaintext: String) throws -> String {
+        return try getGroupSession(handle.int64Value).encrypt(plaintext: plaintext)
+    }
+
+    @objc public static func groupSessionPickle(_ handle: NSNumber) throws -> String {
+        return try getGroupSession(handle.int64Value).pickle()
+    }
+
+    @objc public static func groupSessionClose(_ handle: NSNumber) -> NSNumber {
+        lock.lock(); defer { lock.unlock() }
+        groupSessions.removeValue(forKey: handle.int64Value)
+        return NSNumber(value: true)
+    }
+
+    // ── InboundGroupSession methods (megolm, decrypt-only) ─────────────
+
+    @objc public static func inboundGroupSessionNew(_ sessionKey: String) throws -> NSNumber {
+        let s = try InboundGroupSession(sessionKey: sessionKey)
+        return NSNumber(value: registerInboundGroupSession(s))
+    }
+
+    @objc public static func inboundGroupSessionImport(_ exportedSessionKey: String) throws -> NSNumber {
+        let s = try InboundGroupSession.importSession(exportedSessionKey: exportedSessionKey)
+        return NSNumber(value: registerInboundGroupSession(s))
+    }
+
+    @objc public static func inboundGroupSessionFromPickle(_ pickle: String) throws -> NSNumber {
+        let s = try InboundGroupSession.fromPickle(pickle: pickle)
+        return NSNumber(value: registerInboundGroupSession(s))
+    }
+
+    @objc public static func inboundGroupSessionSessionId(_ handle: NSNumber) throws -> String {
+        return try getInboundGroupSession(handle.int64Value).sessionId()
+    }
+
+    @objc public static func inboundGroupSessionFirstKnownIndex(_ handle: NSNumber) throws -> NSNumber {
+        return NSNumber(value: try getInboundGroupSession(handle.int64Value).firstKnownIndex())
+    }
+
+    @objc public static func inboundGroupSessionDecrypt(_ handle: NSNumber, message: String) throws -> String {
+        return try getInboundGroupSession(handle.int64Value).decrypt(message: message)
+    }
+
+    /// Empty string = "not exportable at this index" (see the TS spec).
+    @objc public static func inboundGroupSessionExportAt(_ handle: NSNumber, index: NSNumber) throws -> String {
+        return try getInboundGroupSession(handle.int64Value).exportAt(index: index.uint32Value) ?? ""
+    }
+
+    @objc public static func inboundGroupSessionPickle(_ handle: NSNumber) throws -> String {
+        return try getInboundGroupSession(handle.int64Value).pickle()
+    }
+
+    @objc public static func inboundGroupSessionClose(_ handle: NSNumber) -> NSNumber {
+        lock.lock(); defer { lock.unlock() }
+        inboundGroupSessions.removeValue(forKey: handle.int64Value)
         return NSNumber(value: true)
     }
 }

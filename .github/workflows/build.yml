@@ -1,0 +1,156 @@
+# Builds every target and validates the shared crypto surface.
+#
+# - wasm:    pkg-web + pkg-node, Rust unit tests, smoke tests, vector checks
+# - android: .so for 3 ABIs + regenerated Kotlin bindings (uploaded artifact)
+# - ios:     VodozemacFFI.xcframework + generated Swift (uploaded artifact)
+#
+# On a tag push (v*), the publish job assembles both npm packages with the
+# freshly built native artifacts and publishes them to the @kinsh scope.
+# Requires the NPM_TOKEN repository secret (npm automation token with
+# publish rights on @kinsh).
+
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Install wasm-pack
+        run: npm install -g wasm-pack
+      - name: Rust unit tests (host)
+        run: cargo test -p vodozemac-ffi
+      - name: Build pkg-web + pkg-node
+        run: npm run build
+      - name: Smoke tests + vector verification
+        run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wasm-pkgs
+          path: |
+            pkg-web
+            pkg-node
+          retention-days: 7
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - name: Build .so for all ABIs
+        # ubuntu-latest images preinstall the NDK; prefer the image's
+        # ANDROID_NDK_HOME, fall back to the "latest" alias.
+        run: |
+          export ANDROID_NDK_HOME="${ANDROID_NDK_HOME:-$ANDROID_NDK_LATEST_HOME}"
+          cargo ndk -P 24 -t arm64-v8a -t armeabi-v7a -t x86_64 \
+            -o rn/android/src/main/jniLibs build -p vodozemac-ffi --release
+      - name: Generate Kotlin bindings
+        run: |
+          cargo run -p vodozemac-ffi --bin uniffi-bindgen --release -- generate \
+            --library target/aarch64-linux-android/release/libvodozemac_ffi.so \
+            --language kotlin --no-format \
+            --out-dir rn/android/src/main/java
+      - name: Check bindings are in sync with the repo
+        run: |
+          git diff --exit-code -- \
+            rn/android/src/main/java/com/dtelecom/vodozemac/vodozemac.kt \
+            || { echo "::error::Generated Kotlin differs from committed copy — regenerate and commit."; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-libs
+          path: |
+            rn/android/src/main/jniLibs
+            rn/android/src/main/java/com/dtelecom/vodozemac/vodozemac.kt
+          retention-days: 7
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
+      - uses: Swatinem/rust-cache@v2
+      - name: Build xcframework + Swift bindings
+        run: ./apple/build_xcframework.sh
+      - name: Sync into rn package
+        run: |
+          rm -rf rn/ios/VodozemacFFI.xcframework
+          cp -R apple/VodozemacFFI.xcframework rn/ios/VodozemacFFI.xcframework
+          cp apple/Sources/VodozemacFFI/VodozemacFFI.swift rn/ios/VodozemacFFI.swift
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-libs
+          path: |
+            rn/ios/VodozemacFFI.xcframework
+            rn/ios/VodozemacFFI.swift
+          retention-days: 7
+
+  rn-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Typecheck rn package
+        working-directory: rn
+        run: |
+          npm ci
+          npx tsc --noEmit
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [wasm, android, ios, rn-typecheck]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v4
+        with:
+          name: wasm-pkgs
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-libs
+          path: rn/android/src/main
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-libs
+          path: rn/ios
+      - name: Build rn JS output (bob)
+        working-directory: rn
+        run: |
+          npm ci
+          npm run build
+      - name: Publish @kinsh/vodozemac-wasm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish @kinsh/vodozemac-rn
+        working-directory: rn
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

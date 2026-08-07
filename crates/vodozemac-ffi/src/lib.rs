@@ -22,6 +22,11 @@ use std::sync::{Arc, Mutex};
 
 use serde::Serialize;
 use vodozemac::{
+    megolm::{
+        ExportedSessionKey, GroupSession as VGroupSession, GroupSessionPickle,
+        InboundGroupSession as VInboundGroupSession, InboundGroupSessionPickle, MegolmMessage,
+        SessionConfig as MegolmSessionConfig, SessionKey,
+    },
     olm::{
         Account as VAccount, AccountPickle, OlmMessage, PreKeyMessage, Session as VSession,
         SessionConfig, SessionPickle,
@@ -370,6 +375,195 @@ impl InboundResult {
     }
 }
 
+// ── Megolm (group sessions) ────────────────────────────────────────────────
+//
+// Pinned to megolm **version 1** — the format Matrix runs in production
+// (AES-256 + HMAC truncated to 8 bytes). vodozemac's version 2 (untruncated
+// MAC) is gated behind the `experimental-session-config` feature and not
+// production-vetted, so we don't use it. Must match the wasm crate.
+
+fn megolm_config() -> MegolmSessionConfig {
+    MegolmSessionConfig::version_1()
+}
+
+/// Decrypt result for `InboundGroupSession::decrypt()` — serialized to a
+/// JSON string, same shape as the wasm crate.
+#[derive(Serialize)]
+struct GroupDecryptResultJs {
+    plaintext: String,
+    /// Ratchet index of the decrypted message. The application layer is
+    /// responsible for replay protection: track (sessionId, messageIndex)
+    /// pairs and reject duplicates.
+    #[serde(rename = "messageIndex")]
+    message_index: u32,
+}
+
+/// Outbound megolm session — one per (circle, sender device). The sender
+/// encrypts with this and shares `session_key()` with members over Olm.
+#[derive(uniffi::Object)]
+pub struct GroupSession {
+    inner: Mutex<VGroupSession>,
+}
+
+#[uniffi::export]
+impl GroupSession {
+    #[uniffi::constructor]
+    pub fn new() -> Arc<Self> {
+        Arc::new(Self { inner: Mutex::new(VGroupSession::new(megolm_config())) })
+    }
+
+    /// Restore from a JSON pickle produced by `pickle()`.
+    #[uniffi::constructor(name = "from_pickle")]
+    pub fn from_pickle(pickle: String) -> Result<Arc<Self>> {
+        let parsed: GroupSessionPickle = serde_json::from_str(&pickle)
+            .map_err(|e| VodozemacError::InvalidPickle { reason: e.to_string() })?;
+        Ok(Arc::new(Self {
+            inner: Mutex::new(VGroupSession::from_pickle(parsed)),
+        }))
+    }
+
+    pub fn session_id(&self) -> Result<String> {
+        let inner = self.lock_inner()?;
+        Ok(inner.session_id())
+    }
+
+    /// Base64 session key at the **current** ratchet index. Share this with
+    /// group members (over Olm); they construct an `InboundGroupSession`
+    /// from it and can decrypt everything from this index onward.
+    pub fn session_key(&self) -> Result<String> {
+        let inner = self.lock_inner()?;
+        Ok(inner.session_key().to_base64())
+    }
+
+    /// Ratchet index of the **next** message to be encrypted.
+    pub fn message_index(&self) -> Result<u32> {
+        let inner = self.lock_inner()?;
+        Ok(inner.message_index())
+    }
+
+    /// Encrypt, returning the base64 megolm message body. No type field —
+    /// megolm has a single message kind (contrast with Olm's prekey/normal).
+    pub fn encrypt(&self, plaintext: String) -> Result<String> {
+        let mut inner = self.lock_inner()?;
+        Ok(inner.encrypt(plaintext.as_bytes()).to_base64())
+    }
+
+    /// Returns the JSON pickle string.
+    pub fn pickle(&self) -> Result<String> {
+        let inner = self.lock_inner()?;
+        let p = inner.pickle();
+        serde_json::to_string(&p)
+            .map_err(|e| VodozemacError::Internal { reason: e.to_string() })
+    }
+}
+
+impl GroupSession {
+    fn lock_inner(&self) -> Result<std::sync::MutexGuard<'_, VGroupSession>> {
+        self.inner
+            .lock()
+            .map_err(|_| VodozemacError::Internal { reason: "group session mutex poisoned".into() })
+    }
+}
+
+/// Inbound megolm session — one per received session key. Decrypt-only.
+#[derive(uniffi::Object)]
+pub struct InboundGroupSession {
+    inner: Mutex<VInboundGroupSession>,
+}
+
+#[uniffi::export]
+impl InboundGroupSession {
+    /// Construct from a base64 session key produced by
+    /// `GroupSession::session_key()`.
+    #[uniffi::constructor]
+    pub fn new(session_key: String) -> Result<Arc<Self>> {
+        let key = SessionKey::from_base64(&session_key)
+            .map_err(|e| VodozemacError::InvalidBase64 { reason: e.to_string() })?;
+        Ok(Arc::new(Self {
+            inner: Mutex::new(VInboundGroupSession::new(&key, megolm_config())),
+        }))
+    }
+
+    /// Construct from a base64 **exported** key produced by `export_at()`.
+    /// Exported keys lose the signing chain, so sessions imported this way
+    /// can decrypt but cannot prove who created the session.
+    ///
+    /// Named `import_session` (not `import`) because `import` is a hard
+    /// keyword in both Kotlin and Swift.
+    #[uniffi::constructor(name = "import_session")]
+    pub fn import_session(exported_session_key: String) -> Result<Arc<Self>> {
+        let key = ExportedSessionKey::from_base64(&exported_session_key)
+            .map_err(|e| VodozemacError::InvalidBase64 { reason: e.to_string() })?;
+        Ok(Arc::new(Self {
+            inner: Mutex::new(VInboundGroupSession::import(&key, megolm_config())),
+        }))
+    }
+
+    /// Restore from a JSON pickle produced by `pickle()`.
+    #[uniffi::constructor(name = "from_pickle")]
+    pub fn from_pickle(pickle: String) -> Result<Arc<Self>> {
+        let parsed: InboundGroupSessionPickle = serde_json::from_str(&pickle)
+            .map_err(|e| VodozemacError::InvalidPickle { reason: e.to_string() })?;
+        Ok(Arc::new(Self {
+            inner: Mutex::new(VInboundGroupSession::from_pickle(parsed)),
+        }))
+    }
+
+    pub fn session_id(&self) -> Result<String> {
+        let inner = self.lock_inner()?;
+        Ok(inner.session_id())
+    }
+
+    /// Lowest ratchet index this session can decrypt.
+    pub fn first_known_index(&self) -> Result<u32> {
+        let inner = self.lock_inner()?;
+        Ok(inner.first_known_index())
+    }
+
+    /// Decrypt a base64 megolm message body. Returns a JSON string
+    /// `{ "plaintext": "...", "messageIndex": n }`.
+    pub fn decrypt(&self, message: String) -> Result<String> {
+        let mut inner = self.lock_inner()?;
+        let msg = MegolmMessage::from_base64(&message)
+            .map_err(|e| VodozemacError::InvalidBase64 { reason: e.to_string() })?;
+        let decrypted = inner
+            .decrypt(&msg)
+            .map_err(|e| VodozemacError::DecryptError { reason: e.to_string() })?;
+        let out = GroupDecryptResultJs {
+            plaintext: String::from_utf8(decrypted.plaintext)
+                .map_err(|e| VodozemacError::InvalidUtf8 { reason: e.to_string() })?,
+            message_index: decrypted.message_index,
+        };
+        serde_json::to_string(&out)
+            .map_err(|e| VodozemacError::Internal { reason: e.to_string() })
+    }
+
+    /// Export the session key at the given ratchet index (base64), e.g. for
+    /// sharing history with a newly joined member. Returns `None` when the
+    /// index is below `first_known_index()`; future indexes are computable
+    /// by ratcheting forward.
+    pub fn export_at(&self, index: u32) -> Result<Option<String>> {
+        let mut inner = self.lock_inner()?;
+        Ok(inner.export_at(index).map(|k| k.to_base64()))
+    }
+
+    /// Returns the JSON pickle string.
+    pub fn pickle(&self) -> Result<String> {
+        let inner = self.lock_inner()?;
+        let p = inner.pickle();
+        serde_json::to_string(&p)
+            .map_err(|e| VodozemacError::Internal { reason: e.to_string() })
+    }
+}
+
+impl InboundGroupSession {
+    fn lock_inner(&self) -> Result<std::sync::MutexGuard<'_, VInboundGroupSession>> {
+        self.inner.lock().map_err(|_| VodozemacError::Internal {
+            reason: "inbound group session mutex poisoned".into(),
+        })
+    }
+}
+
 // ── tests ──────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -478,5 +672,59 @@ mod tests {
             inbound.take_session(),
             Err(VodozemacError::SessionAlreadyTaken)
         ));
+    }
+
+    /// Megolm: outbound → inbound round-trip, ratchet indexes, pickling,
+    /// late-join semantics, and export/import.
+    #[test]
+    fn megolm_roundtrip_pickle_and_export() {
+        let outbound = GroupSession::new();
+        assert_eq!(outbound.message_index().unwrap(), 0);
+        let session_key = outbound.session_key().unwrap();
+        let session_id = outbound.session_id().unwrap();
+
+        let inbound = InboundGroupSession::new(session_key).unwrap();
+        assert_eq!(inbound.session_id().unwrap(), session_id);
+        assert_eq!(inbound.first_known_index().unwrap(), 0);
+
+        // Round-trip three messages; indexes advance.
+        let bodies: Vec<String> = ["first", "second", "third"]
+            .iter()
+            .map(|m| outbound.encrypt(m.to_string()).unwrap())
+            .collect();
+        assert_eq!(outbound.message_index().unwrap(), 3);
+        for (i, body) in bodies.iter().enumerate() {
+            let out: serde_json::Value =
+                serde_json::from_str(&inbound.decrypt(body.clone()).unwrap()).unwrap();
+            assert_eq!(out["plaintext"], ["first", "second", "third"][i]);
+            assert_eq!(out["messageIndex"], i as u64);
+        }
+
+        // Pickle round-trip on both sides; session keeps working.
+        let outbound2 = GroupSession::from_pickle(outbound.pickle().unwrap()).unwrap();
+        let inbound2 =
+            InboundGroupSession::from_pickle(inbound.pickle().unwrap()).unwrap();
+        let m4 = outbound2.encrypt("fourth".to_string()).unwrap();
+        let out: serde_json::Value =
+            serde_json::from_str(&inbound2.decrypt(m4).unwrap()).unwrap();
+        assert_eq!(out["plaintext"], "fourth");
+
+        // Late joiner gets the current ratchet; history is unreadable.
+        let late =
+            InboundGroupSession::new(outbound2.session_key().unwrap()).unwrap();
+        assert_eq!(late.first_known_index().unwrap(), 4);
+        assert!(late.decrypt(bodies[0].clone()).is_err());
+
+        // Export at index 2 + import; index 0 stays unreadable there too.
+        let exported = inbound2.export_at(2).unwrap().expect("export at known index");
+        let imported = InboundGroupSession::import_session(exported).unwrap();
+        assert_eq!(imported.first_known_index().unwrap(), 2);
+        let out: serde_json::Value = serde_json::from_str(
+            &imported.decrypt(bodies[2].clone()).unwrap(),
+        )
+        .unwrap();
+        assert_eq!(out["plaintext"], "third");
+        assert!(imported.decrypt(bodies[0].clone()).is_err());
+        assert!(imported.export_at(0).unwrap().is_none());
     }
 }

@@ -1,0 +1,30 @@
+{
+  "description": "Megolm v1 cross-platform test vectors. An InboundGroupSession built from sessionKey must decrypt every message; one imported from exportedAtIndex2 must decrypt only index >= 2.",
+  "megolmVersion": 1,
+  "sessionId": "BkVpzWUU4pWnH/MvrLFoysEEVx4PWpSpriT35yYig24",
+  "sessionKey": "AgAAAABRwi3KytZVbS6L4u+AppeOx25xtER1lxC5B/O0F2gtBGDJgzsSN6q0bGFTxSTJ3hkuSMnLZt7+5h1kHsCC3jJ6qc3hc5FwPlCMSnsjrE6Nz3dWJmPx3Gjt1JLbIw+/SZpa209iJTosXY8hiKNwuy1+X4F8EW1v9d/nHukRgvQuwgZFac1lFOKVpx/zL6yxaMrBBFceD1qUqa4k9+cmIoNushCGQaIb58eRt7hjID90CYHR3gPRsRpMIbjMiOdziC4ZExU4H7zZ0qiYi4tnwJPcB5hxmhfE1KUjfvxhx6AACA",
+  "exportedAtIndex2": "AQAAAAJRwi3KytZVbS6L4u+AppeOx25xtER1lxC5B/O0F2gtBGDJgzsSN6q0bGFTxSTJ3hkuSMnLZt7+5h1kHsCC3jJ6qc3hc5FwPlCMSnsjrE6Nz3dWJmPx3Gjt1JLbIw+/SZrbizV9iPcwAx/DrYEjSy7xc0bm+f5Qek3zLBBksauXjwZFac1lFOKVpx/zL6yxaMrBBFceD1qUqa4k9+cmIoNu",
+  "inboundPickle": "{\"initial_ratchet\":{\"inner\":[81,194,45,202,202,214,85,109,46,139,226,239,128,166,151,142,199,110,113,180,68,117,151,16,185,7,243,180,23,104,45,4,96,201,131,59,18,55,170,180,108,97,83,197,36,201,222,25,46,72,201,203,102,222,254,230,29,100,30,192,130,222,50,122,169,205,225,115,145,112,62,80,140,74,123,35,172,78,141,207,119,86,38,99,241,220,104,237,212,146,219,35,15,191,73,154,90,219,79,98,37,58,44,93,143,33,136,163,112,187,45,126,95,129,124,17,109,111,245,223,231,30,233,17,130,244,46,194],\"counter\":0},\"signing_key\":[6,69,105,205,101,20,226,149,167,31,243,47,172,177,104,202,193,4,87,30,15,90,148,169,174,36,247,231,38,34,131,110],\"signing_key_verified\":true,\"config\":{\"version\":\"V1\"}}",
+  "messages": [
+    {
+      "index": 0,
+      "plaintext": "megolm vector 0: plain ascii",
+      "ciphertext": "AwgAEiBnEsSKobW4X/HM5ft/4nxIgsjwxhBl9X+4dIlujXokymqIhf+qq4m2u6xL2+1LL/juORtRMXW9sTdMMj8RnKINEjNXjJ3CIeSbbsUAWLSx0lE/9JzTRirt3OwxY7jTvk8YnkHEDULpAQ"
+    },
+    {
+      "index": 1,
+      "plaintext": "megolm vector 1: unicode — çírçlé 🎉",
+      "ciphertext": "AwgBEjDaZWGV4Z7jDdLxB4Sgb1bHbIWW3bZ3aj9+GEER70C+0cHZbUjQLqaGjR40U0V9M2RCo4B0olz/E8TQEdmOjTTHMUyRblh8LjVZXASSx2JbnM8kkUt6rS0K7aIcKehzwreMwLB0HaBI7YtPilcpzEdjGcFNNyFGcg0"
+    },
+    {
+      "index": 2,
+      "plaintext": "megolm vector 2: {\"json\":\"payload\",\"n\":42}",
+      "ciphertext": "AwgCEjA99qCr4HVTXKbr6pAYZUQWGDsOh9jvYl6DyGdO0GSid/aczl2S0ArQCHUY/nweJzF40y8l5uT1m+oQwKEMbdTYoBKQ83siTOUZPq1j77+7Xg7WkS37cQFbXo7X0jOaglaWkVSnMqBAiBObetlk7pW06m6z4F+/tQE"
+    },
+    {
+      "index": 3,
+      "plaintext": "megolm vector 3: after export point",
+      "ciphertext": "AwgDEjAKo29QtvPNfOgAkfeJFsdOX06SBjnknV61w0NuJLohWzjyYueVypdOe4lvzCBz5dVRmMc506TbPdQIklwQNCvQHsO28gXLHVYuXIaZ4nASHdCQ+EOWTX3QLVIip00ToKNfnXpp7ylvi36NQVo4eKCB3wxAhy8k0Qg"
+    }
+  ]
+}

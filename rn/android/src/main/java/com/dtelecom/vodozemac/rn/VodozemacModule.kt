@@ -12,6 +12,8 @@
 package com.dtelecom.vodozemac.rn
 
 import com.dtelecom.vodozemac.Account
+import com.dtelecom.vodozemac.GroupSession
+import com.dtelecom.vodozemac.InboundGroupSession
 import com.dtelecom.vodozemac.NativeVodozemacSpec
 import com.dtelecom.vodozemac.Session
 import com.facebook.react.bridge.Arguments
@@ -34,6 +36,8 @@ class VodozemacModule(reactContext: ReactApplicationContext) : NativeVodozemacSp
     private var nextHandle: Long = 1
     private val accounts: MutableMap<Long, Account> = mutableMapOf()
     private val sessions: MutableMap<Long, Session> = mutableMapOf()
+    private val groupSessions: MutableMap<Long, GroupSession> = mutableMapOf()
+    private val inboundGroupSessions: MutableMap<Long, InboundGroupSession> = mutableMapOf()
 
     private fun allocHandle(): Long = lock.withLock {
         val h = nextHandle
@@ -59,6 +63,27 @@ class VodozemacModule(reactContext: ReactApplicationContext) : NativeVodozemacSp
 
     private fun getSession(h: Long): Session = lock.withLock {
         sessions[h] ?: throw IllegalStateException("no session for handle $h")
+    }
+
+    private fun registerGroupSession(s: GroupSession): Long {
+        val h = allocHandle()
+        lock.withLock { groupSessions[h] = s }
+        return h
+    }
+
+    private fun registerInboundGroupSession(s: InboundGroupSession): Long {
+        val h = allocHandle()
+        lock.withLock { inboundGroupSessions[h] = s }
+        return h
+    }
+
+    private fun getGroupSession(h: Long): GroupSession = lock.withLock {
+        groupSessions[h] ?: throw IllegalStateException("no group session for handle $h")
+    }
+
+    private fun getInboundGroupSession(h: Long): InboundGroupSession = lock.withLock {
+        inboundGroupSessions[h]
+            ?: throw IllegalStateException("no inbound group session for handle $h")
     }
 
     override fun getName(): String = NAME
@@ -153,6 +178,68 @@ class VodozemacModule(reactContext: ReactApplicationContext) : NativeVodozemacSp
 
     override fun sessionClose(handle: Double): Boolean {
         lock.withLock { sessions.remove(handle.toLong()) }
+        return true
+    }
+
+    // ── GroupSession (outbound megolm) ─────────────────────────────────
+
+    override fun groupSessionNew(): Double =
+        registerGroupSession(GroupSession()).toDouble()
+
+    override fun groupSessionFromPickle(pickle: String): Double =
+        registerGroupSession(GroupSession.fromPickle(pickle)).toDouble()
+
+    override fun groupSessionSessionId(handle: Double): String =
+        getGroupSession(handle.toLong()).sessionId()
+
+    override fun groupSessionSessionKey(handle: Double): String =
+        getGroupSession(handle.toLong()).sessionKey()
+
+    override fun groupSessionMessageIndex(handle: Double): Double =
+        getGroupSession(handle.toLong()).messageIndex().toDouble()
+
+    override fun groupSessionEncrypt(handle: Double, plaintext: String): String =
+        getGroupSession(handle.toLong()).encrypt(plaintext)
+
+    override fun groupSessionPickle(handle: Double): String =
+        getGroupSession(handle.toLong()).pickle()
+
+    override fun groupSessionClose(handle: Double): Boolean {
+        lock.withLock { groupSessions.remove(handle.toLong()) }
+        return true
+    }
+
+    // ── InboundGroupSession (megolm, decrypt-only) ─────────────────────
+
+    override fun inboundGroupSessionNew(sessionKey: String): Double =
+        registerInboundGroupSession(InboundGroupSession(sessionKey)).toDouble()
+
+    override fun inboundGroupSessionImport(exportedSessionKey: String): Double =
+        registerInboundGroupSession(
+            InboundGroupSession.importSession(exportedSessionKey),
+        ).toDouble()
+
+    override fun inboundGroupSessionFromPickle(pickle: String): Double =
+        registerInboundGroupSession(InboundGroupSession.fromPickle(pickle)).toDouble()
+
+    override fun inboundGroupSessionSessionId(handle: Double): String =
+        getInboundGroupSession(handle.toLong()).sessionId()
+
+    override fun inboundGroupSessionFirstKnownIndex(handle: Double): Double =
+        getInboundGroupSession(handle.toLong()).firstKnownIndex().toDouble()
+
+    override fun inboundGroupSessionDecrypt(handle: Double, message: String): String =
+        getInboundGroupSession(handle.toLong()).decrypt(message)
+
+    // Empty string = "not exportable at this index" (see the TS spec).
+    override fun inboundGroupSessionExportAt(handle: Double, index: Double): String =
+        getInboundGroupSession(handle.toLong()).exportAt(index.toLong().toUInt()) ?: ""
+
+    override fun inboundGroupSessionPickle(handle: Double): String =
+        getInboundGroupSession(handle.toLong()).pickle()
+
+    override fun inboundGroupSessionClose(handle: Double): Boolean {
+        lock.withLock { inboundGroupSessions.remove(handle.toLong()) }
         return true
     }
 }
