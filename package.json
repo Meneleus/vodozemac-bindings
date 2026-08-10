@@ -1,6 +1,6 @@
 {
   "name": "@kinsh/vodozemac-wasm",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Browser/Node WASM bindings for vodozemac (Olm + Megolm primitives), tailored for non-Matrix chat use.",
   "license": "Apache-2.0",
   "repository": {
