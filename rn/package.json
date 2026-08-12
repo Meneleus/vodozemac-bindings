@@ -49,6 +49,15 @@
     "react-native-builder-bob": "^0.36.0",
     "typescript": "^5.7.0"
   },
+  "overrides": {
+    "shell-quote": "1.10.0",
+    "ws": "7.5.13",
+    "@babel/core": "7.29.7",
+    "js-yaml@3": "3.15.1",
+    "js-yaml@4": "4.3.1",
+    "brace-expansion@1": "1.1.18",
+    "brace-expansion@2": "2.1.4"
+  },
   "codegenConfig": {
     "name": "RTNVodozemacSpec",
     "type": "modules",

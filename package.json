@@ -27,9 +27,6 @@
   "files": [
     "pkg-web",
     "pkg-node",
-    "src",
-    "scripts",
-    "Cargo.toml",
     "LICENSE",
     "README.md"
   ],

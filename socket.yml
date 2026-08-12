@@ -1,0 +1,9 @@
+# Socket.dev GitHub App / CLI config.
+# https://docs.socket.dev/docs/socket-yml
+version: 2
+
+# Minified Chrome DevTools (@react-native/debugger-frontend) and packed
+# Rust crates (zerocopy, libc) trip Socket's obfuscation detector. Those
+# are false positives for this repo — not malware. Real CVEs stay enabled.
+issueRules:
+  obfuscatedFile: false
